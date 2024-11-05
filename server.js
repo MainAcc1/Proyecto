@@ -25,5 +25,5 @@ app.post('/register', (req, res) => {
 
 // Iniciar el servidor
 app.listen(3000, () => {
-    console.log('Servidor corriendo en http://localhost:3000');
+    console.log('Servidor corriendo en http://79.117.245.212:3000');
 });

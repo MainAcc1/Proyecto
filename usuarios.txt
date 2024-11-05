@@ -3,3 +3,5 @@ Usuario: MainAcc, Contraseña: Equilatrero123$
 Usuario: PruebPrueba, Contraseña: 123456
 Usuario: ASFDASF, Contraseña: KJJJ
 Usuario: alvaro.lie, Contraseña: 2223PicassoHOLAHOLAola
+Usuario: MainAcc, Contraseña: 123456
+Usuario: alvaro.lie, Contraseña: Chorizo1234_
