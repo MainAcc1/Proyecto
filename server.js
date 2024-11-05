@@ -2,7 +2,7 @@
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const PORT = process.env.PORT || 3000;
 // Configurar la aplicación Express
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +24,6 @@ app.post('/register', (req, res) => {
 });
 
 // Iniciar el servidor
-app.listen(3000, () => {
+app.listen(PORT, '79.117.245.212', () => {
     console.log('Servidor corriendo en http://79.117.245.212:3000');
 });
