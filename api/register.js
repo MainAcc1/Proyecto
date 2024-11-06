@@ -1,46 +1,40 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+const sqlite3 = require('sqlite3').verbose();
+const express = require('express');
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDruCnTHTuRa4oVkyJo2kHG1M9SL_tM4uU",
-  authDomain: "iniciosesion-bcf4c.firebaseapp.com",
-  databaseURL: "https://iniciosesion-bcf4c-default-rtdb.firebaseio.com",
-  projectId: "iniciosesion-bcf4c",
-  storageBucket: "iniciosesion-bcf4c.firebasestorage.app",
-  messagingSenderId: "4409158395",
-  appId: "1:4409158395:web:be2f977740f33a93e65e5e",
-  measurementId: "G-QN1LQFRM86"
-};
+const app = express();
+app.use(express.urlencoded({ extended: true }));
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Crear o conectar a la base de datos
+let db = new sqlite3.Database('./database.db', (err) => {
+    if (err) {
+        console.error('Error al conectar con la base de datos:', err.message);
+    } else {
+        console.log('Conectado a la base de datos SQLite.');
+    }
+});
 
+// Crear la tabla de usuarios si no existe
+db.run(`CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+)`);
 
-import fs from 'fs';
-import path from 'path';
-
-export default function handler(req, res) {
-    if (req.method === 'POST') {
-        const { username, password } = req.body;
-
-        // Ruta temporal para guardar datos, no persistente
-        const filePath = path.join('/tmp', 'usuarios.txt');
-
-        // Guardar la información en el archivo
-        fs.appendFile(filePath, `Usuario: ${username}, Contraseña: ${password}\n`, (err) => {
+// Ruta para manejar las solicitudes POST
+app.post('/api/register', (req, res) => {
+    const { username, password } = req.body;
+    if (username && password) {
+        db.run(`INSERT INTO usuarios (username, password) VALUES (?, ?)`, [username, password], function(err) {
             if (err) {
-                console.error(err);
-                return res.status(500).send('Error al guardar los datos');
+                console.error('Error al insertar datos:', err.message);
+                res.status(500).send('Error en el servidor');
+            } else {
+                res.send('Usuario registrado con éxito');
             }
-            res.status(200).send('Datos guardados con éxito');
         });
     } else {
-        res.status(405).send('Método no permitido');
+        res.status(400).send('Faltan datos');
     }
-}
+});
+
+module.exports = app;
